@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WiFi Access Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .container {
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    input, button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .plans button {
+      background: #007bff;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Welcome to Fast WiFi</h2>
+
+  <div class="container">
+
+    <h3>Select a Plan</h3>
+
+    <div class="plans">
+      <button onclick="selectPlan(10, '1 Hour')">KES 10 - 1 Hour</button>
+      <button onclick="selectPlan(20, '3 Hours')">KES 20 - 3 Hours</button>
+      <button onclick="selectPlan(50, '24 Hours')">KES 50 - 24 Hours</button>
+    </div>
+
+    <h3>Enter Phone Number</h3>
+
+    <input type="text" id="phone" placeholder="07XXXXXXXX">
+
+    <button onclick="pay()">Pay with M-Pesa</button>
+
+    <p id="status"></p>
+
+  </div>
+
+<script>
+let selectedAmount = 0;
+
+function selectPlan(amount, name) {
+  selectedAmount = amount;
+  document.getElementById("status").innerText = "Selected: " + name;
+}
+
+function pay() {
+  let phone = document.getElementById("phone").value;
+
+  if (!phone || selectedAmount === 0) {
+    alert("Select a plan and enter phone number");
+    return;
+  }
+
+  document.getElementById("status").innerText = "Sending payment request...";
+
+  fetch("https://your-backend-url.com/pay", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      phone: phone,
+      amount: selectedAmount
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("status").innerText = data.message;
+  })
+  .catch(err => {
+    document.getElementById("status").innerText = "Error processing payment";
+  });
+}
+</script>
+
+</body>
+</html>
